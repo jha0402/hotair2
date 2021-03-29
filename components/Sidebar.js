@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { Avatar, Button, IconButton } from '@material-ui/core';
+import { Avatar, IconButton } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ChatIcon from '@material-ui/icons/Chat';
 import SearchIcon from '@material-ui/icons/Search';
+import CreateChatInput from './CreateChatInput';
 
 function Sidebar() {
 	return (
@@ -25,7 +26,7 @@ function Sidebar() {
 					<SearchInput placeholder="채팅 검색" />
 				</Search>
 
-				<ChattingButton>새 채팅 시작하기</ChattingButton>
+				<CreateChatInput />
 			</Container>
 		</div>
 	);
@@ -42,7 +43,7 @@ const Head = styled.div`
 	position: sticky;
 	top: 0;
 	height: 80px;
-	padding: 8px;
+	padding: 4px;
 	z-index: 1;
 	justify-content: space-between;
 	align-items: center;
@@ -60,7 +61,7 @@ const UserPhoto = styled(Avatar)`
 
 const Search = styled.div`
 	display: flex;
-	padding: 16px;
+	padding: 8px;
 	align-items: center;
 `;
 
@@ -69,13 +70,5 @@ const SearchInput = styled.input`
 	border: none;
 	:focus {
 		outline: none;
-	}
-`;
-
-const ChattingButton = styled(Button)`
-	width: 100%;
-	&&& {
-		border-bottom: 1px solid whitesmoke;
-		border-top: 1px solid whitesmoke;
 	}
 `;
