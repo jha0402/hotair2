@@ -4,13 +4,26 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ChatIcon from '@material-ui/icons/Chat';
 import SearchIcon from '@material-ui/icons/Search';
 import CreateChatInput from './CreateChatInput';
+import { auth, db } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useCollection } from 'react-firebase-hooks/firestore';
 
 function Sidebar() {
+	const [user] = useAuthState(auth);
+	const userChats = db
+		.collection('chats')
+		.where('users', 'array-contains', user.email);
+	const [chatsSnapshot] = useCollection(userChats);
+
 	return (
 		<div>
 			<Container>
 				<Head>
-					<UserPhoto />
+					<UserPhoto
+						onClick={() => {
+							auth.signOut();
+						}}
+					/>
 					<Icons>
 						<IconButton>
 							<ChatIcon />
@@ -26,7 +39,11 @@ function Sidebar() {
 					<SearchInput placeholder="채팅 검색" />
 				</Search>
 
-				<CreateChatInput />
+				<CreateChatInput user={user} chatsSnapshot={chatsSnapshot} />
+
+				{chatsSnapshot?.docs.map((chat) => (
+					<Chat key={chat.id} id={chat.id} users={chat.data().users} />
+				))}
 			</Container>
 		</div>
 	);

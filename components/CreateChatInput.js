@@ -1,10 +1,11 @@
 import Popover from '@material-ui/core/Popover';
 import { Button } from '@material-ui/core';
 import styled from 'styled-components';
-import React, { useRef } from 'react';
+import React from 'react';
 import * as EmailValidator from 'email-validator';
+import { db } from '../firebase';
 
-function CreateChatInput() {
+function CreateChatInput({ user, chatsSnapshot }) {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
 	const handleClick = (event) => {
@@ -15,9 +16,23 @@ function CreateChatInput() {
 	};
 
 	const handleSubmit = (event) => {
-		if (EmailValidator.validate(event.target.value)) {
+		const inputValue = event.target.value;
+		if (
+			EmailValidator.validate(inputValue) &&
+			inputValue !== user.email &&
+			!checkExistingChat(inputValue)
+		) {
+			db.collection('chats').add({
+				users: [user.email, inputValue],
+			});
 		}
 	};
+
+	const checkExistingChat = (targetEmail) =>
+		!!chatsSnapshot?.docs.find(
+			(chat) =>
+				chat.data().users.find((user) => user === targetEmail)?.length > 0
+		);
 
 	const open = Boolean(anchorEl);
 	const id = open ? 'simple-popover' : undefined;
